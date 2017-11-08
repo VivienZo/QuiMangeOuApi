@@ -1,0 +1,251 @@
+---
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: QuiMangeOù API
+  description: "API pour l'application QuiMangeOù : https://github.com/VivienZo/QuiMangeOuApi "
+# the domain of the service
+host: localhost:8080
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /api/v1
+produces:
+  - application/json
+paths:
+  /validations:
+    post:
+      summary: "Permet de demander la création d'un nouveau Groupe. La requête prend un e-mail et un nom de groupe en entrée. Un document Validation est créé et un token de sécurité lui est associé. Ce token servira à valider la création du nouveau Groupe. Un e-mail est envoyé à l'adresse fournie pour que l'utilisateur puisse valider son nouveau Groupe. La réponse HTTP contient un lien qui permet de valider la création du groupe."
+      parameters:
+        - name: nomGroupe
+          in: body
+          description: "Nom du groupe"
+          required: true
+          type: string
+        - name: email
+          in: body
+          description: "E-mail de contact du groupe"
+          required: true
+          type: string
+      tags:
+        - Validations
+      responses:
+        201:
+          description: "OK : {status, data, message}"
+        500:
+          description: "KO : {status, error, message}"
+  /validations/:token:
+    get:
+      summary: "Vérifie si un document Validation contient le token fourni et si celui-ci n'est pas expiré. Si ces deux conditions sont respectées, le Groupe rattaché à la Validation est créé. Un e-mail contenant un lien vers le Groupe est envoyé à l'adresse de contact. Ce lien peut être partagé par l'utilisateur pour inviter d'autres personnes à participer à son groupe."
+      parameters:
+        - name: token
+          in: path
+          description: "Clé de validation du groupe"
+          required: true
+          type: string
+      tags:
+        - Validations
+      responses:
+        200:
+          description: "OK : {status, data, message}"
+        500:
+          description: "KO : {status, error, message}"
+  /groupes/:slug:
+    get:
+      summary: "Un groupe peut être une entreprise, une classe, un groupe d'amis, etc. Les personnes disposant de l'URL voient les propositions du groupe et peuvent ajouter leurs propositions au groupe. Cette route permet de récupérer les informations générales du groupe (nom, adresse e-mail de contact)."
+      parameters:
+        - name: slug
+          in: path
+          description: "Clé d'identification du groupe"
+          required: true
+          type: string
+      tags:
+        - Groupes
+      responses:
+        200:
+          description: "OK : {status, data, message}"
+        500:
+          description: "KO : {status, error, message}"
+    patch:
+      summary: "Permet de modifier le nom du groupe."
+      parameters:
+        - name: slug
+          in: path
+          description: "Clé d'identification du groupe"
+          required: true
+          type: string
+        - name: nom
+          in: body
+          description: "Nouveau nom du groupe"
+          required: true
+          type: string
+      tags:
+        - Groupes
+      responses:
+        200:
+          description: "OK : {status, data, message}"
+        500:
+          description: "KO : {status, error, message}"
+  /groupes/:slug/propositions:
+    get:
+      summary: "Pour un groupe donné, récupère toutes les propositions du jour courant ou de la période renseignée."
+      parameters:
+        - name: slug
+          in: path
+          description: "Clé d'identification du groupe"
+          required: true
+          type: string
+        - name: startday
+          in: query
+          description: "Début de la période de récupération des propositions (jour indiqué inclus). Exemple : 2017-12-31."
+          required: true
+          type: string
+        - name: endday
+          in: query
+          description: "Début de la période de récupération des propositions (jour indiqué inclus). Exemple : 2017-12-31."
+          required: true
+          type: string
+      tags:
+        - Propositions
+      responses:
+        200:
+          description: "OK : {status, data, message}"
+        500:
+          description: "KO : {status, error, message}"
+    post:
+      summary: "Crée une nouvelle proposition et l'ajoute au groupe."
+      parameters:
+        - name: slug
+          in: path
+          description: "Clé d'identification du groupe"
+          required: true
+          type: string
+        - name: resto
+          in: body
+          description: "Nom du restaurant proposé"
+          required: true
+          type: string
+      tags:
+        - Propositions
+      responses:
+        201:
+          description: "OK : {status, data, message}"
+        500:
+          description: "KO : {status, error, message}"
+  /groupes/:slug/propositions/:proposition_id:
+    get:
+      summary: "Récupère la proposition ayant l'id donné."
+      parameters:
+        - name: slug
+          in: path
+          description: "Clé d'identification du groupe"
+          required: true
+          type: string
+        - name: proposition_id
+          in: path
+          description: "Id de la proposition à récupérer"
+          required: true
+          type: string
+      tags:
+        - Propositions
+      responses:
+        200:
+          description: "OK : {status, data, message}"
+        500:
+          description: "KO : {status, error, message}"
+    patch:
+      summary: "Modifie la proposition ayant l'id donné."
+      parameters:
+        - name: slug
+          in: path
+          description: "Clé d'identification du groupe"
+          required: true
+          type: string
+        - name: proposition_id
+          in: path
+          description: "Id de la proposition à modifier"
+          required: true
+          type: string
+        - name: resto
+          in: body
+          description: "Nom du restaurant"
+          required: false
+          type: string
+        - name: date
+          in: body
+          description: "Date de la proposition (2017-12-31)"
+          required: false
+          type: string
+        - name: participant
+          in: body
+          description: "Participant à ajouter à la proposition"
+          required: false
+          type: string
+        - name: participants
+          in: body
+          description: "Participants à ajouter à la proposition"
+          required: false
+          type: array
+        - name: participantASupprimer
+          in: body
+          description: "Participant à supprimer de la proposition"
+          required: false
+          type: string
+        - name: nonParticipant
+          in: body
+          description: "Non participant à ajouter à la proposition"
+          required: false
+          type: string
+        - name: nonParticipants
+          in: body
+          description: "Non participants à ajouter à la proposition"
+          required: false
+          type: array
+        - name: nonParticipantASupprimer
+          in: body
+          description: "Non participant à supprimer de la proposition"
+          required: false
+          type: string
+        - name: potentielParticipant
+          in: body
+          description: "Potentiel participant à ajouter à la proposition"
+          required: false
+          type: string
+        - name: potentielsParticipants
+          in: body
+          description: "Potentiels participants à ajouter à la proposition"
+          required: false
+          type: array
+        - name: potentielParticipantASupprimer
+          in: body
+          description: "Potentiel participant à supprimer de la proposition"
+          required: false
+          type: string
+      tags:
+        - Propositions
+      responses:
+        200:
+          description: "OK : {status, data, message}"
+        500:
+          description: "KO : {status, error, message}"
+    delete:
+      summary: "Supprime la proposition ayant l'id donné."
+      parameters:
+        - name: slug
+          in: path
+          description: "Clé d'identification du groupe"
+          required: true
+          type: string
+        - name: proposition_id
+          in: path
+          description: "Id de la proposition à supprimer"
+          required: true
+          type: string
+      tags:
+        - Propositions
+      responses:
+        200:
+          description: "OK : {status, data, message}"
+        500:
+          description: "KO : {status, error, message}"

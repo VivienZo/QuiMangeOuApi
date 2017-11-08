@@ -1,0 +1,5 @@
+node_modules/
+config/db.js
+config/mdp.js
+.jsbeautifyrc
+Procfile

@@ -1,0 +1,36 @@
+{
+    "name": "quimangeou-api",
+    "homepage": "https://quimangeou-api.herokuapp.com/",
+    "author": {
+        "name": "Vivien Zoonekynd",
+        "url": "https://github.com/VivienZo"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/VivienZo/QuiMangeOuApi.git"
+    },
+    "description": "Node.js API (Express) for the Qui Mange Où app.",
+    "keywords": [
+        "QuiMangeOu",
+        "API",
+        "Restoo"
+    ],
+    "license": "MIT",
+    "main": "./server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "nodemon server.js"
+    },
+    "dependencies": {
+        "bluebird": "^3.5.1",
+        "body-parser": "^1.18.2",
+        "express": "^4.16.2",
+        "moment": "^2.19.1",
+        "mongoose": "^4.13.0",
+        "morgan": "^1.9.0",
+        "nodemailer": "^4.3.1"
+    },
+    "devDependencies": {
+        "nodemon": "^1.12.1"
+    }
+}

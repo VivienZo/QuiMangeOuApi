@@ -1,0 +1,508 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "QuiMangeOù API",
+        "description": "API pour l'application QuiMangeOù : https://github.com/VivienZo/QuiMangeOuApi"
+    },
+    "host": "localhost:8080",
+    "schemes": [
+        "http"
+    ],
+    "basePath": "/api/v1",
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "description": "Route qui affiche la documentation de l'API",
+                "responses": {
+                    "200": {
+                        "description": "Bienvenue sur l'API QuiMangeOù !"
+                    }
+                }
+            }
+        },
+        "/validations": {
+            "post": {
+                "description": "Permet de demander la création d'un nouveau Groupe. La requête prend un e-mail et un nom de groupe en entrée. Un document Validation est créé et un token de sécurité lui est associé. Ce token servira à valider la création du nouveau Groupe. Un e-mail est envoyé sur l'adresse fournie. Cet e-mail contient un lien qui permet de valider la création du groupe.",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Adresse e-mail",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "nomGroupe",
+                        "in": "query",
+                        "description": "Nom du groupe à créer",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "baseUrl",
+                        "in": "query",
+                        "description": "Domaine qui sera indiqué dans les mails envoyés à l'utilisateur (http://localhost:8080 par exemple)",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Validations"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            }
+        },
+        "/validations/:token": {
+            "get": {
+                "description": "Vérifie si un document Validation contient le token fourni et si celui-ci n'est pas expiré. Si ces deux conditions sont respectées, le Groupe rattaché à la Validation est créé. Un e-mail contenant un lien vers le Groupe est envoyé à l'adresse de contact. Ce lien peut être partagé par l'utilisateur pour inviter d'autres personnes à participer à son groupe.",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Adresse e-mail",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "nomGroupe",
+                        "in": "query",
+                        "description": "Nom du groupe à créer",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Validations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            }
+        },
+        "/groupes/:slug": {
+            "get": {
+                "description": "Un groupe peut être une entreprise, une classe, un groupe d'amis, etc. Les personnes disposant de l'URL voient les propositions du groupe, peuvent ajouter leurs propositions et peuvent ajouter des personnes aux propositions existantes. Cette route permet de récupérer les informations générales du groupe (nom, adresse e-mail de contact).",
+                "tags": [
+                    "Groupes"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            },
+            "put": {
+                "description": "Permet de modifier le nom du groupe.",
+                "parameters": [
+                    {
+                        "name": "nom",
+                        "in": "query",
+                        "description": "Nouveau nom du groupe",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Groupes"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            }
+        },
+        "/groupes/:slug/propositions": {
+            "get": {
+                "description": "Pour un groupe et un jour donné (le jour courant par défaut), un utilisateur peut proposer de manger quelque part. Par défaut, il est ajouté à sa proposition avec le statut validé. Il peut ajouter d'autres personnes aux propositions du jour (les personnes qui lui ont répondu à l'oral ou par chat par exemple). Cette route permet de récupérer toutes les propositions du jour pour le groupe donné.",
+                "tags": [
+                    "Propositions"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            },
+            "post": {
+                "description": "Crée une nouvelle proposition et l'ajoute au groupe.",
+                "parameters": [
+                    {
+                        "name": "restoId",
+                        "in": "query",
+                        "description": "Id du resto proposé",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Propositions"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            }
+        },
+        "/groupes/:slug/propositions/:proposition_id": {
+            "get": {
+                "description": "Récupère la proposition ayant l'id donné.",
+                "tags": [
+                    "Propositions"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Supprime la proposition ayant l'id donné. Les engagements de cette proposition sont également supprimés.",
+                "tags": [
+                    "Propositions"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            }
+        },
+        "/groupes/:slug/propositions/:proposition_id/engagements": {
+            "get": {
+                "description": "Quand une personne indique qu'elle participera à une proposition de repas, un engagement est créé. Cette route permet de récupérer tous les engagements d'une proposition.",
+                "tags": [
+                    "Engagements"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            },
+            "post": {
+                "description": "Crée un nouvel engagement pour la proposition donnée.",
+                "parameters": [
+                    {
+                        "name": "participantId",
+                        "in": "query",
+                        "description": "Id du participant qui s'engage",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "statut",
+                        "in": "query",
+                        "description": "Statut du participant : invité, accepté, refusé...",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Engagements"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            }
+        },
+        "/groupes/:slug/propositions/:proposition_id/engagements/:engagement_id": {
+            "get": {
+                "description": "Récupère l'engagement ayant l'id donné.",
+                "tags": [
+                    "Engagements"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            },
+            "put": {
+                "description": "Permet de modifier le statut de l'engagement.",
+                "parameters": [
+                    {
+                        "name": "statut",
+                        "in": "query",
+                        "description": "Nouveau statut de l'engagement",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Engagements"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Supprime l'engagement ayant l'id donné.",
+                "tags": [
+                    "Engagements"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            }
+        },
+        "/groupes/:slug/participants": {
+            "get": {
+                "description": "Quand une personne participe à une proposition du groupe, elle est ajoutée à la liste des participants au groupe. Ceci permet de la retrouver plus facilement (autocomplétion) à sa prochaine participation.",
+                "tags": [
+                    "Participants"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            },
+            "post": {
+                "description": "Crée un nouveau participant dans un groupe.",
+                "parameters": [
+                    {
+                        "name": "nom",
+                        "in": "query",
+                        "description": "Nom du participant",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Participants"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            }
+        },
+        "/groupes/:slug/participants/:participant_id": {
+            "delete": {
+                "description": "Supprime le participant ayant l'id donné.",
+                "tags": [
+                    "Participants"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            }
+        },
+        "/groupes/:slug/restos": {
+            "get": {
+                "description": "Quand un nouveau lieu est proposé pour manger, un resto est ajouté au groupe. Ceci permet de le retrouver plus facilement (autocomplétion) lors de la prochaine création de proposition.",
+                "tags": [
+                    "Restos"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            },
+            "post": {
+                "description": "Crée un nouveau resto dans un groupe.",
+                "parameters": [
+                    {
+                        "name": "nom",
+                        "in": "query",
+                        "description": "Nom du resto",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Restos"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            }
+        },
+        "/groupes/:slug/restos/:participant_id": {
+            "delete": {
+                "description": "Supprime le resto ayant l'id donné.",
+                "tags": [
+                    "Restos"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : {status, data, message}"
+                    },
+                    "500": {
+                        "description": "KO : {status, error, message}"
+                    }
+                }
+            }
+        },
+        "/beers": {
+            "get": {
+                "description": "Retourne la collection de bières.",
+                "tags": [
+                    "Beers"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : beers"
+                    },
+                    "500": {
+                        "description": "KO : err"
+                    }
+                }
+            },
+            "post": {
+                "description": "Ajoute une bière à la collection.",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Nom de la bière",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Beers"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK : Beer created!"
+                    },
+                    "500": {
+                        "description": "KO : err"
+                    }
+                }
+            }
+        },
+        "/beers/:beer_id": {
+            "get": {
+                "description": "Récupère la bière ayant l'id donné.",
+                "tags": [
+                    "Beers"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : beer"
+                    },
+                    "500": {
+                        "description": "KO : err"
+                    }
+                }
+            },
+            "put": {
+                "description": "Permet de modifier le nom de la bière.",
+                "parameters": [
+                    {
+                        "name": "statut",
+                        "in": "query",
+                        "description": "Nouveau nom de la bière",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Beers"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : Beer updated!"
+                    },
+                    "500": {
+                        "description": "KO : err"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Supprime la bière ayant l'id donné.",
+                "tags": [
+                    "Beers"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK : Successfully deleted"
+                    },
+                    "500": {
+                        "description": "KO : err"
+                    }
+                }
+            }
+        }
+    }
+}
