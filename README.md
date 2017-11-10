@@ -9,3 +9,9 @@ L'application Qui Mange Où vous permet de mieux vous organiser pour votre repas
 L'application vous fournit un récapitulatif des plans de chacun au sein de votre groupe d'amis.
 
 \#QuiMangeOù \#Restoo \#Noosphere \#Noosbee
+
+## Utilisation
+L'API est déployée sur Heroku (platform as a service). Les données sont stockées dans une base de données MongoDB sur mLab (data as a service).
+
+L'API est disponible à l'adresse suivante :
+https://quimangeou-api.herokuapp.com
